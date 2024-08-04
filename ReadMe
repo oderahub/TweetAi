@@ -1,0 +1,120 @@
+TweetAI Backend
+
+Overview
+This project is the backend implementation for the TweetAI service. It is designed to automatically generate and manage Autobots, Posts, and Comments using data fetched from an external API. The backend is built using Node.js, Express, TypeORM, and MySQL, and it provides RESTful API endpoints with comprehensive Swagger documentation.
+
+Features
+Automatically create 500 unique Autobots every hour, each with 10 Posts and each Post with 10 Comments.
+Use jsonplaceholder.typicode.com to generate Autobots, Posts, and Comments.
+Ensure no two Autobots have the same Post title.
+Provide a real-time count of Autobots created.
+
+API endpoint to pull Autobots, an Autobot's posts, and post comments.
+Implement rate limiting (5 requests per minute) and pagination (10 results per request).
+Swagger documentation for API endpoints.
+
+Technologies Used
+Node.js
+Express
+TypeORM
+MySQL
+Axios
+UUID
+Swagger
+Node-Cron
+Cors
+Winston (Logger)
+Getting Started
+Prerequisites
+Node.js and npm
+MySQL
+
+Git
+Installation
+Clone the repository:
+
+bash
+
+`git clone <repository-url>`
+cd tweetai-backend
+Install the dependencies:
+
+bash
+
+yarn install
+
+
+Configure the environment variables:
+Create a .env file in the root directory and add the following:
+
+env
+DB_HOST=your-database-host
+DB_PORT=your-database-port
+DB_USERNAME=your-database-username
+DB_PASSWORD=your-database-password
+DB_NAME=your-database-name
+Run the database migrations:
+
+bash
+
+yarn typeorm migration:run
+Start the development server:
+
+bash
+
+yarn dev
+
+
+API Documentation
+The API is documented using Swagger. Once the server is running, you can access the documentation at:
+
+bash
+
+http://localhost:3000/api-docs
+
+Endpoints
+GET /api/autobots: Retrieve all Autobots.
+GET /api/autobots/
+/posts: Retrieve all posts for a specific Autobot.
+GET /api/posts/
+/comments: Retrieve all comments for a specific post.
+
+
+File Structure
+.
+├── src
+│   ├── controllers
+│   │   └── autobotController.ts
+│   ├── entities
+│   │   ├── Autobot.ts
+│   │   ├── Post.ts
+│   │   └── Comment.ts
+│   ├── middlewares
+│   │   └── rateLimiter.ts
+│   ├── services
+│   │   └── AutobotService.ts
+│   ├── utils
+│   │   └── logger.ts
+│   ├── ormconfig.ts
+│   ├── swagger.ts
+│   └── index.ts
+├── .gitignore
+├── package.json
+└── README.md
+
+
+Running the Cron Job
+The cron job to create Autobots is scheduled to run every hour.
+To test this functionality, you can manually invoke the createAutobots method in AutobotService.
+
+Logger
+Logging is implemented using Winston. Logs will be displayed in the console for both info and error messages.
+
+License
+This project is licensed under the Chidera License.
+
+Contributing
+If you would like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
+
+This README file provides a comprehensive overview of your backend project, including setup instructions, API documentation, and other important details. 
+Adjust any specific information based on your project requirements and setup.
