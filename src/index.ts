@@ -60,8 +60,14 @@ io.on('connection', (socket) => {
   // Function to emit Autobots count
   const emitAutobotsCount = async () => {
     try {
-      const count = await autobotService.getAutobotCount(); 
-      socket.emit('autobots:count', count); 
+      const count = await autobotService.getAutobotCount(); // Fetch Autobots count
+      socket.emit('autobots:count', count); // Emit count to clients
+
+      // Periodic updates
+      setInterval(async () => {
+        const count = await autobotService.getAutobotCount();
+        socket.emit('autobots:update', count);
+      }, 500000); // Update every 500 seconds
     } catch (error) {
       Logger.error('Error fetching Autobots count', error);
     }
@@ -70,20 +76,9 @@ io.on('connection', (socket) => {
   // Emit Autobots count when a connection is established
   emitAutobotsCount();
 
-  // Periodic updates
-  const intervalId = setInterval(async () => {
-    try {
-      const count = await autobotService.getAutobotCount();
-      io.emit('autobots:update', count);
-    } catch (error) {
-      Logger.error('Error updating Autobots count', error);
-    }
-  }, 10000); // Update every 10 seconds
-
   // Handle disconnection
   socket.on('disconnect', () => {
     Logger.info('User disconnected');
-    clearInterval(intervalId); 
   });
 });
 
@@ -103,4 +98,3 @@ cron.schedule('* * * * *', () => {
 });
 
 export default app;
-
