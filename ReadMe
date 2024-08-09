@@ -1,120 +1,82 @@
 TweetAI Backend
-
 Overview
-This project is the backend implementation for the TweetAI service. It is designed to automatically generate and manage Autobots, Posts, and Comments using data fetched from an external API. The backend is built using Node.js, Express, TypeORM, and MySQL, and it provides RESTful API endpoints with comprehensive Swagger documentation.
+This project is a backend service for the AI social media platform TweetAI. It handles the creation and management of Autobots, processes background jobs, and provides a real-time UI update of Autobots count using WebSockets. The backend is built with Express, TypeScript, and integrates with MySQL, Socket.IO, and Bull for task management.
 
 Features
-Automatically create 500 unique Autobots every hour, each with 10 Posts and each Post with 10 Comments.
-Use jsonplaceholder.typicode.com to generate Autobots, Posts, and Comments.
-Ensure no two Autobots have the same Post title.
-Provide a real-time count of Autobots created.
-
-API endpoint to pull Autobots, an Autobot's posts, and post comments.
-Implement rate limiting (5 requests per minute) and pagination (10 results per request).
-Swagger documentation for API endpoints.
-
-Technologies Used
-Node.js
-Express
-TypeORM
-MySQL
-Axios
-UUID
-Swagger
-Node-Cron
-Cors
-Winston (Logger)
-Getting Started
+Real-time Autobots Count: Uses Socket.IO to emit the count of Autobots in real-time.
+Rate Limiting: Limits the number of API requests to 5 per minute per IP.
+Pagination: Limits the number of data results returned per request to 10.
+Background Job Processing: Uses Bull to manage background jobs for Autobots creation.
+API Documentation: Generated with Swagger.
 Prerequisites
-Node.js and npm
-MySQL
-
-Git
-Installation
-Clone the repository:
-
-bash
-
-`git clone <repository-url>`
-cd tweetai-backend
-Install the dependencies:
+Node.js (v16 or later)
+MySQL database
+Redis server (for Bull)
+Yarn (for package management)
+Setup
+Clone the Repository
 
 bash
+Copy code
+git clone <repository-url>
+cd <repository-directory>
+Install Dependencies
 
+bash
+Copy code
 yarn install
+Environment Configuration
 
-
-Configure the environment variables:
-Create a .env file in the root directory and add the following:
+Create a .env file in the root directory and add the following environment variables:
 
 env
-DB_HOST=your-database-host
-DB_PORT=your-database-port
-DB_USERNAME=your-database-username
-DB_PASSWORD=your-database-password
-DB_NAME=your-database-name
-Run the database migrations:
+Copy code
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+DATABASE_USER=root
+DATABASE_PASSWORD=password
+DATABASE_NAME=tweetai
+REDIS_HOST=localhost
+REDIS_PORT=6379
+Database Setup
+
+Ensure your MySQL database is up and running. The database schema will be set up automatically when the server starts.
+
+Start the Server
 
 bash
+Copy code
+yarn start
+The server will be available at "loccally".
 
-yarn typeorm migration:run
-Start the development server:
+API Endpoints
+GET /api/autobots: Retrieve a paginated list of Autobots. Use query parameters limit (default 10) and offset (default 0).
+GET /test-create-autobots: Add a job to the queue to create Autobots. This endpoint is for testing purposes.
+WebSocket Integration
+The backend uses Socket.IO to provide real-time updates for the Autobots count. The WebSocket server listens on the same port as the HTTP server.
 
-bash
+Rate Limiting
+Rate limiting is applied to API routes using express-rate-limit. Each IP is limited to 5 requests per minute.
 
-yarn dev
+Pagination
+The API endpoint /api/autobots supports pagination. Each request can return a maximum of 10 results.
 
+Background Jobs
+The application uses Bull to manage background jobs for creating Autobots. A cron job is scheduled to run every minute to add new jobs to the queue.
 
-API Documentation
-The API is documented using Swagger. Once the server is running, you can access the documentation at:
+Swagger Documentation
+Swagger API documentation is available at /api-docs after starting the server.
 
-bash
+Frontend Integration
+For real-time updates on Autobots count, connect to the WebSocket server using the URL http://localhost:3000.
 
-https://tweetai-production.up.railway.app/api-docs/    ||      http://localhost:3000/api-docs
+Testing
+To run tests, use:
 
-Endpoints
-GET /api/autobots: Retrieve all Autobots.
-GET /api/autobots/
-/posts: Retrieve all posts for a specific Autobot.
-GET /api/posts/
-/comments: Retrieve all comments for a specific post.
+bash 
 
-
-File Structure
-.
-├── src
-│   ├── controllers
-│   │   └── autobotController.ts
-│   ├── entities
-│   │   ├── Autobot.ts
-│   │   ├── Post.ts
-│   │   └── Comment.ts
-│   ├── middlewares
-│   │   └── rateLimiter.ts
-│   ├── services
-│   │   └── AutobotService.ts
-│   ├── utils
-│   │   └── logger.ts
-│   ├── ormconfig.ts
-│   ├── swagger.ts
-│   └── index.ts
-├── .gitignore
-├── package.json
-└── README.md
-
-
-Running the Cron Job
-The cron job to create Autobots is scheduled to run every hour.
-To test this functionality, you can manually invoke the createAutobots method in AutobotService.
-
-Logger
-Logging is implemented using Winston. Logs will be displayed in the console for both info and error messages.
-
-License
-This project is licensed under the Chidera License.
+yarn test
 
 Contributing
-If you would like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
+Feel free to submit issues or pull requests. For significant changes, please open an issue first to discuss the changes.
 
-This README file provides a comprehensive overview of your backend project, including setup instructions, API documentation, and other important details. 
-Adjust any specific information based on your project requirements and setup.
