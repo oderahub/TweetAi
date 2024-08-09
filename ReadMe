@@ -8,6 +8,8 @@ Rate Limiting: Limits the number of API requests to 5 per minute per IP.
 Pagination: Limits the number of data results returned per request to 10.
 Background Job Processing: Uses Bull to manage background jobs for Autobots creation.
 API Documentation: Generated with Swagger.
+
+
 Prerequisites
 Node.js (v16 or later)
 MySQL database
@@ -17,20 +19,20 @@ Setup
 Clone the Repository
 
 bash
-Copy code
+
 git clone <repository-url>
 cd <repository-directory>
 Install Dependencies
 
 bash
-Copy code
+
 yarn install
 Environment Configuration
 
 Create a .env file in the root directory and add the following environment variables:
 
 env
-Copy code
+
 DATABASE_HOST=localhost
 DATABASE_PORT=3306
 DATABASE_USER=root
@@ -44,10 +46,10 @@ Ensure your MySQL database is up and running. The database schema will be set up
 
 Start the Server
 
-bash
-Copy code
+```bash
+
 yarn start
-The server will be available at "loccally".
+The server will be available at "locally".
 
 API Endpoints
 GET /api/autobots: Retrieve a paginated list of Autobots. Use query parameters limit (default 10) and offset (default 0).
