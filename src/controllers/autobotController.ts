@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import autobotService from '../services/AutobotService'; // Note the lowercase 'autobotService'
+import autobotService from '../services/AutobotService';
+import rateLimiter from '../middlewares/rateLimiter';
 
 const router = Router();
 
@@ -7,7 +8,23 @@ const router = Router();
  * @openapi
  * /autobots:
  *   get:
- *     summary: Get all Autobots
+ *     summary: Retrieve a list of Autobots with pagination
+ *     description: This endpoint returns a paginated list of Autobots. You can specify the number of Autobots per page and the page offset.
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: The number of Autobots to return per page.
+ *       - in: query
+ *         name: offset
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *         description: The number of Autobots to skip before starting to collect the result set.
  *     responses:
  *       200:
  *         description: A list of Autobots
@@ -17,34 +34,36 @@ const router = Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Autobot'
+ *       500:
+ *         description: Internal server error
  */
-router.get('/autobots', async (req, res) => {
-  const limit = parseInt(req.query.limit as string) || 10;
-  const offset = parseInt(req.query.offset as string) || 0;
-
+router.get('/autobots/count', async (req, res) => {
   try {
-    const autobots = await autobotService.getAllAutobots(limit, offset);
-    res.json(autobots);
+    const count = await autobotService.getAutobotCount();
+    res.json({ count });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching Autobots' });
+    res.status(500).json({ message: 'Error fetching Autobots count' });
   }
 });
+
 
 /**
  * @openapi
  * /autobots/{id}/posts:
  *   get:
- *     summary: Get posts for a specific Autobot
+ *     summary: Retrieve posts for a specific Autobot
+ *     description: This endpoint returns all posts associated with a specific Autobot. If the Autobot is not found, a 404 error is returned.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the Autobot
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: The unique identifier of the Autobot.
  *     responses:
  *       200:
- *         description: A list of posts
+ *         description: A list of posts associated with the Autobot
  *         content:
  *           application/json:
  *             schema:
@@ -53,8 +72,10 @@ router.get('/autobots', async (req, res) => {
  *                 $ref: '#/components/schemas/Post'
  *       404:
  *         description: Autobot not found
+ *       500:
+ *         description: Internal server error
  */
-router.get('/autobots/:id/posts', async (req, res) => {
+router.get('/autobots/:id/posts', rateLimiter, async (req, res) => {
   const autobotId = req.params.id;
 
   try {
@@ -73,17 +94,19 @@ router.get('/autobots/:id/posts', async (req, res) => {
  * @openapi
  * /posts/{id}/comments:
  *   get:
- *     summary: Get comments for a specific post
+ *     summary: Retrieve comments for a specific post
+ *     description: This endpoint returns all comments associated with a specific post. If the post is not found, a 404 error is returned.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The ID of the post
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: The unique identifier of the post.
  *     responses:
  *       200:
- *         description: A list of comments
+ *         description: A list of comments associated with the post
  *         content:
  *           application/json:
  *             schema:
@@ -92,8 +115,10 @@ router.get('/autobots/:id/posts', async (req, res) => {
  *                 $ref: '#/components/schemas/Comment'
  *       404:
  *         description: Post not found
+ *       500:
+ *         description: Internal server error
  */
-router.get('/posts/:id/comments', async (req, res) => {
+router.get('/posts/:id/comments', rateLimiter, async (req, res) => {
   const postId = req.params.id;
 
   try {
@@ -113,6 +138,7 @@ router.get('/posts/:id/comments', async (req, res) => {
  * /create-autobots:
  *   post:
  *     summary: Manually create Autobots
+ *     description: This endpoint manually triggers the creation of Autobots, posts, and comments. It’s intended for initial setup or testing purposes.
  *     responses:
  *       200:
  *         description: Autobots created successfully

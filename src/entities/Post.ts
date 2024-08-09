@@ -15,4 +15,5 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.post)
   comments!: Comment[];
+  body!: string;
 }

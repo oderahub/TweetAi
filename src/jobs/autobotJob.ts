@@ -12,5 +12,6 @@ export const autobotJobProcessor = async (job: Job) => {
     Logger.info('Autobot creation process completed successfully');
   } catch (error) {
     Logger.error('Error in creating Autobots:', error);
+    throw error;
   }
 };

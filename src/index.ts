@@ -1,8 +1,8 @@
 import express from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import AppDataSource from './ormconfig';
-import { autobotQueue } from './bullConfig'; // Import queue
+import { AppDataSource } from './ormconfig';
+import { autobotQueue } from './bullConfig'; 
 import rateLimiter from './middlewares/rateLimiter';
 import swaggerDocs from './swagger';
 import cron from 'node-cron';
@@ -11,7 +11,7 @@ import autobotsRoutes from './controllers/autobotController';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import autobotService from './services/AutobotService';
-import './jobs'; // Initialize job processor
+import './jobs'; 
 
 dotenv.config();
 
@@ -53,28 +53,37 @@ app.get('/test-create-autobots', async (req, res) => {
 
 app.use(rateLimiter);
 
-
-
-// Set up WebSocket connection
+// WebSocket connection
 io.on('connection', (socket) => {
   Logger.info('A user connected');
 
-  // Emit autobots update to clients
-  const emitAutobots = async () => {
+  // Function to emit Autobots count
+  const emitAutobotsCount = async () => {
     try {
-      const autobots = await autobotService.getAllAutobots(10, 0); // Fetch only a limited number of autobots
-      socket.emit('autobots:update', autobots);
+      const count = await autobotService.getAutobotCount(); 
+      socket.emit('autobots:count', count); 
     } catch (error) {
-      Logger.error('Error fetching autobots', error);
+      Logger.error('Error fetching Autobots count', error);
     }
   };
 
-  // Call emitAutobots when the connection is established
-  emitAutobots();
+  // Emit Autobots count when a connection is established
+  emitAutobotsCount();
+
+  // Periodic updates
+  const intervalId = setInterval(async () => {
+    try {
+      const count = await autobotService.getAutobotCount();
+      io.emit('autobots:update', count);
+    } catch (error) {
+      Logger.error('Error updating Autobots count', error);
+    }
+  }, 10000); // Update every 10 seconds
 
   // Handle disconnection
   socket.on('disconnect', () => {
     Logger.info('User disconnected');
+    clearInterval(intervalId); 
   });
 });
 
@@ -92,4 +101,6 @@ cron.schedule('* * * * *', () => {
   Logger.info('Cron job started');
   autobotQueue.add({});
 });
+
 export default app;
+

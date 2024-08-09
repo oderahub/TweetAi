@@ -8,7 +8,7 @@ const swaggerOptions = {
     info: {
       title: "TweetAI API",
       version: "1.0.0",
-      description: "API documentation for TweetAI",
+      description: "API documentation for TweetAI, including endpoints for managing Autobots, posts, and comments.",
     },
     servers: [
       {
@@ -24,17 +24,18 @@ const swaggerOptions = {
             id: {
               type: "string",
               format: "uuid",
-              description: "UUID of the Autobot",
+              description: "Unique identifier for the Autobot.",
             },
             name: {
               type: "string",
-              description: "Name of the Autobot",
+              description: "Name of the Autobot.",
             },
             posts: {
               type: "array",
               items: {
                 $ref: "#/components/schemas/Post",
               },
+              description: "List of posts associated with the Autobot.",
             },
           },
         },
@@ -44,24 +45,26 @@ const swaggerOptions = {
             id: {
               type: "string",
               format: "uuid",
-              description: "UUID of the Post",
+              description: "Unique identifier for the Post.",
             },
             title: {
               type: "string",
-              description: "Title of the Post",
+              description: "Title of the Post.",
             },
             body: {
               type: "string",
-              description: "Body of the Post",
+              description: "Body content of the Post.",
             },
             comments: {
               type: "array",
               items: {
                 $ref: "#/components/schemas/Comment",
               },
+              description: "List of comments associated with the Post.",
             },
             autobot: {
               $ref: "#/components/schemas/Autobot",
+              description: "The Autobot that created this post.",
             },
           },
         },
@@ -71,21 +74,22 @@ const swaggerOptions = {
             id: {
               type: "string",
               format: "uuid",
-              description: "UUID of the Comment",
+              description: "Unique identifier for the Comment.",
             },
             text: {
               type: "string",
-              description: "Text of the Comment",
+              description: "Content of the Comment.",
             },
             post: {
               $ref: "#/components/schemas/Post",
+              description: "The Post to which this comment belongs.",
             },
           },
         },
       },
     },
   },
-  apis: ["./src/controllers/*.ts"],
+  apis: ["./src/controllers/*.ts"], // Path to your API documentation
 };
 
 const swaggerDocs = (app: Express) => {
