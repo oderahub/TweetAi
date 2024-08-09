@@ -1,8 +1,7 @@
-import { Router } from "express";
-import { AutobotService } from "../services/AutobotService";
+import { Router } from 'express';
+import autobotService from '../services/AutobotService'; // Note the lowercase 'autobotService'
 
 const router = Router();
-const autobotService = new AutobotService();
 
 /**
  * @openapi
@@ -19,9 +18,16 @@ const autobotService = new AutobotService();
  *               items:
  *                 $ref: '#/components/schemas/Autobot'
  */
-router.get("/autobots", async (req, res) => {
-  const autobots = await autobotService.getAllAutobots();
-  res.json(autobots);
+router.get('/autobots', async (req, res) => {
+  const limit = parseInt(req.query.limit as string) || 10;
+  const offset = parseInt(req.query.offset as string) || 0;
+
+  try {
+    const autobots = await autobotService.getAllAutobots(limit, offset);
+    res.json(autobots);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching Autobots' });
+  }
 });
 
 /**
@@ -48,13 +54,18 @@ router.get("/autobots", async (req, res) => {
  *       404:
  *         description: Autobot not found
  */
-router.get("/autobots/:id/posts", async (req, res) => {
+router.get('/autobots/:id/posts', async (req, res) => {
   const autobotId = req.params.id;
-  const posts = await autobotService.getPostsForAutobot(autobotId);
-  if (posts) {
-    res.json(posts);
-  } else {
-    res.status(404).send("Autobot not found");
+
+  try {
+    const posts = await autobotService.getPostsForAutobot(autobotId);
+    if (posts) {
+      res.json(posts);
+    } else {
+      res.status(404).send('Autobot not found');
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching posts' });
   }
 });
 
@@ -82,13 +93,18 @@ router.get("/autobots/:id/posts", async (req, res) => {
  *       404:
  *         description: Post not found
  */
-router.get("/posts/:id/comments", async (req, res) => {
+router.get('/posts/:id/comments', async (req, res) => {
   const postId = req.params.id;
-  const comments = await autobotService.getCommentsForPost(postId);
-  if (comments) {
-    res.json(comments);
-  } else {
-    res.status(404).send("Post not found");
+
+  try {
+    const comments = await autobotService.getCommentsForPost(postId);
+    if (comments) {
+      res.json(comments);
+    } else {
+      res.status(404).send('Post not found');
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching comments' });
   }
 });
 
@@ -103,12 +119,12 @@ router.get("/posts/:id/comments", async (req, res) => {
  *       500:
  *         description: Error in creating Autobots
  */
-router.post("/create-autobots", async (req, res) => {
+router.post('/create-autobots', async (req, res) => {
   try {
     await autobotService.createAutobots();
-    res.send("Autobots created successfully");
+    res.send('Autobots created successfully');
   } catch (error) {
-    res.status(500).send("Error in creating Autobots");
+    res.status(500).send('Error in creating Autobots');
   }
 });
 

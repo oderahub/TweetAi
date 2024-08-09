@@ -4,21 +4,25 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "dev": "ts-node-dev src/index.ts",
-    "lint": "eslint 'src/**/*.{ts,js}' --fix",
-    "test": "jest"
-  },
+  "start": "node dist/index.js",
+  "build": "tsc",
+  "dev": "ts-node-dev src/index.ts",
+  "lint": "eslint 'src/**/*.{ts,js}' --fix",
+  "test": "jest",
+  "redis": "redis-server"
+}
+,
   "dependencies": {
     "@types/socket.io": "^3.0.2",
     "axios": "^1.7.3",
+    "bull": "^4.16.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.4.0",
     "mysql2": "^3.11.0",
     "node-cron": "^3.0.3",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "socket.io-client": "^4.7.5",
     "swagger-jsdoc": "^6.2.8",
