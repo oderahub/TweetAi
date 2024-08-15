@@ -7,6 +7,7 @@ import { Logger } from "../utils/logger";
 import { AppDataSource } from "../ormconfig";
 import io from "../index";
 
+
 export class AutobotService {
   autobotRepository = AppDataSource.getRepository(Autobot);
   postRepository = AppDataSource.getRepository(Post);
@@ -48,33 +49,46 @@ export class AutobotService {
     return post ? post.comments : null;
   }
 
-  // Method to create Autobots and related entities
+  // Method to create Autobots and related entities using JSONPlaceholder
   async createAutobots() {
     try {
-      const { data } = await axios.get('https://jsonplaceholder.typicode.com/posts');
-      
+      // Fetch Autobots (Users) from JSONPlaceholder
+      const { data: users } = await axios.get('https://jsonplaceholder.typicode.com/users');
+      const { data: postsData } = await axios.get('https://jsonplaceholder.typicode.com/posts');
+      const { data: commentsData } = await axios.get('https://jsonplaceholder.typicode.com/comments');
+
       const autobots = [];
       const posts = [];
       const comments = [];
 
-      for (let i = 0; i < 500; i++) {
+      // Limit the number of Autobots to 500 and create related entities
+      for (let i = 0; i < Math.min(users.length, 500); i++) {
+        const user = users[i];
         const autobot = new Autobot();
         autobot.id = uuidv4();
-        autobot.name = `Autobot${i + 1}`;
+        autobot.name = user.name; // Use the user's name as the Autobot's name
         autobots.push(autobot);
 
-        for (let j = 0; j < 10; j++) {
+        // Filter posts for this Autobot
+        const userPosts = postsData.filter((post: { userId: string; }) => post.userId === user.id);
+
+        for (let j = 0; j < userPosts.length; j++) {
+          const postData = userPosts[j];
           const post = new Post();
           post.id = uuidv4();
-          post.title = `Post Title ${i}-${j}`;
-          post.body = 'Sample body text';
+          post.title = postData.title;
+          post.body = postData.body;
           post.autobot = autobot;
           posts.push(post);
 
-          for (let k = 0; k < 10; k++) {
+          // Filter comments for this post
+          const postComments = commentsData.filter((comment: { postId: string; }) => comment.postId === postData.id);
+
+          for (let k = 0; k < postComments.length; k++) {
+            const commentData = postComments[k];
             const comment = new Comment();
             comment.id = uuidv4();
-            comment.text = `Comment text ${i}-${j}-${k}`;
+            comment.text = commentData.body;
             comment.post = post;
             comments.push(comment);
           }
