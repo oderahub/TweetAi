@@ -37,7 +37,6 @@ app.use(
   })
 );
 
-// Swagger setup - API documentation
 swaggerDocs(app);
 
 app.use('/api', autobotsRoutes);
@@ -91,10 +90,19 @@ AppDataSource.initialize()
   })
   .catch((error) => Logger.error(error));
 
-// Schedule a cron job to add autobot creation job to the queue every minute
-cron.schedule('* * * * *', () => {
-  Logger.info('Cron job started');
+// Schedule a cron job to add autobot creation job to the queue every hour
+cron.schedule('0 * * * *', () => { // Run every hour
+  Logger.info('Hourly cron job started');
   autobotQueue.add({});
+});
+
+// Queue event listeners for monitoring
+autobotQueue.on('completed', (job) => {
+  Logger.info(`Job ${job.id} completed successfully`);
+});
+
+autobotQueue.on('failed', (job, err) => {
+  Logger.error(`Job ${job.id} failed with error: ${err.message}`);
 });
 
 export default app;

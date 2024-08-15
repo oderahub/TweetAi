@@ -133,18 +133,6 @@ router.get('/posts/:id/comments', rateLimiter, async (req, res) => {
   }
 });
 
-/**
- * @openapi
- * /create-autobots:
- *   post:
- *     summary: Manually create Autobots
- *     description: This endpoint manually triggers the creation of Autobots, posts, and comments. It’s intended for initial setup or testing purposes.
- *     responses:
- *       200:
- *         description: Autobots created successfully
- *       500:
- *         description: Error in creating Autobots
- */
 router.post('/create-autobots', async (req, res) => {
   try {
     await autobotService.createAutobots();

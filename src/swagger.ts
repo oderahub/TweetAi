@@ -89,7 +89,7 @@ const swaggerOptions = {
       },
     },
   },
-  apis: ["./src/controllers/*.ts"], // Path to your API documentation
+  apis: ["./src/controllers/*.ts"], 
 };
 
 const swaggerDocs = (app: Express) => {

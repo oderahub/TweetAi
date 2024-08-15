@@ -61,12 +61,12 @@ export class AutobotService {
       const posts = [];
       const comments = [];
 
-      // Limit the number of Autobots to 500 and create related entities
+      // Limit the number of Autobots to 500 
       for (let i = 0; i < Math.min(users.length, 500); i++) {
         const user = users[i];
         const autobot = new Autobot();
         autobot.id = uuidv4();
-        autobot.name = user.name; // Use the user's name as the Autobot's name
+        autobot.name = user.name; 
         autobots.push(autobot);
 
         // Filter posts for this Autobot
