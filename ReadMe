@@ -9,6 +9,8 @@ Pagination: Limits the number of data results returned per request to 10.
 Background Job Processing: Uses Bull to manage background jobs for Autobots creation.
 API Documentation: Generated with Swagger.
 
+// background process, jobs management, queue management, webhooks, OOP, solid principles, rate-limiter 
+
 
 Prerequisites
 Node.js (v16 or later)
