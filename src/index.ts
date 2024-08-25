@@ -40,15 +40,15 @@ app.use(
 swaggerDocs(app);
 
 app.use('/api', autobotsRoutes);
-app.get('/test-create-autobots', async (req, res) => {
-  try {
-    // Add a job to the queue instead of processing it directly
-    autobotQueue.add({});
-    res.send('Autobot creation job added to the queue');
-  } catch (error) {
-    res.status(500).send('Error in creating Autobots');
-  }
-});
+// app.get('/test-create-autobots', async (req, res) => {
+//   try {
+//     // Add a job to the queue instead of processing it directly
+//     autobotQueue.add({});
+//     res.send('Autobot creation job added to the queue');
+//   } catch (error) {
+//     res.status(500).send('Error in creating Autobots');
+//   }
+// });
 
 app.use(rateLimiter);
 
