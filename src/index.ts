@@ -93,7 +93,7 @@ AppDataSource.initialize()
 // Schedule a cron job to add autobot creation job to the queue every hour
 cron.schedule('0 * * * *', () => { // Run every hour
   Logger.info('Hourly cron job started');
-  autobotQueue.add({});
+  autobotQueue.add({}); // <-- This line adds a job to the autobotQueue
 });
 
 // Queue event listeners for monitoring
