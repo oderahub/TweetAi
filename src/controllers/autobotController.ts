@@ -133,13 +133,4 @@ router.get('/posts/:id/comments', rateLimiter, async (req, res) => {
   }
 });
 
-// router.post('/create-autobots', async (req, res) => {
-//   try {
-//     await autobotService.createAutobots();
-//     res.send('Autobots created successfully');
-//   } catch (error) {
-//     res.status(500).send('Error in creating Autobots');
-//   }
-// });
-
 export default router;
