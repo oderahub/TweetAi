@@ -1,5 +1,6 @@
 Overview
-This Node.js application is built using Express, with a focus on handling background tasks using a Bull queue system. The application performs operations like creating "Autobots" and their related entities (posts and comments) as background jobs. The application is designed to scale and handle tasks asynchronously, leveraging WebSocket for real-time updates.
+This Node.js application is built using Express, with a focus on handling background tasks using a Bull queue system. The application performs operations like creating "Autobots" 
+and their related entities (posts and comments) as background jobs. The application is designed to scale and handle tasks asynchronously, leveraging WebSocket for real-time updates.
 
 Key Components
 Express Server Setup:
